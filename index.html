@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Pour toi, Habibi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ===================== TOKENS ===================== */
+  :root{
+    --wine-950:#1c060c;
+    --wine-900:#2a0a13;
+    --wine-800:#3a0f1c;
+    --wine-700:#4d1526;
+    --wine-glow:#7a1f35;
+    --cream:#f3e7d4;
+    --cream-soft:#e6d5b8;
+    --cream-dim:rgba(243,231,212,0.72);
+    --gold:#c9a15c;
+    --gold-light:#e8caa0;
+    --gold-deep:#8a6a34;
+    --glass:rgba(243,231,212,0.06);
+    --glass-strong:rgba(243,231,212,0.09);
+    --glass-border:rgba(201,161,92,0.28);
+    --serif:'Cormorant Garamond', serif;
+    --sans:'Jost', sans-serif;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(122,31,53,0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 15%, rgba(201,161,92,0.10), transparent 45%),
+      radial-gradient(ellipse at 50% 100%, rgba(122,31,53,0.28), transparent 60%),
+      linear-gradient(180deg, var(--wine-950), var(--wine-900) 40%, var(--wine-950));
+    background-attachment:fixed;
+    color:var(--cream);
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* subtle film-grain vignette */
+  body::before{
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:2;
+    background:radial-gradient(ellipse at center, transparent 45%, rgba(10,2,5,0.55) 100%);
+  }
+  body::after{
+    content:'';
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:.05;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  ::selection{background:var(--gold); color:var(--wine-950);}
+
+  h1,h2,h3{font-family:var(--serif); font-weight:500; letter-spacing:.01em;}
+
+  a{color:inherit;}
+
+  .eyebrow{
+    font-family:var(--sans);
+    text-transform:uppercase;
+    letter-spacing:.32em;
+    font-size:.68rem;
+    color:var(--gold-light);
+    opacity:.85;
+  }
+
+  /* ===================== AMBIENT FLOATING HEARTS ===================== */
+  #hearts-layer{
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:3;
+    overflow:hidden;
+  }
+  .heart-particle{
+    position:absolute;
+    bottom:-8%;
+    color:var(--gold-light);
+    opacity:0;
+    filter:drop-shadow(0 0 6px rgba(201,161,92,0.45));
+    animation:floatUp linear infinite;
+    will-change:transform, opacity;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg) scale(var(--s,1)); opacity:0; }
+    8%{ opacity:var(--o,.5); }
+    92%{ opacity:var(--o,.5); }
+    100%{ transform:translateY(-108vh) translateX(var(--dx,20px)) rotate(var(--r,20deg)) scale(var(--s,1)); opacity:0; }
+  }
+
+  /* ===================== INTRO OVERLAY ===================== */
+  #intro{
+    position:fixed; inset:0;
+    z-index:100;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:2rem;
+    background:
+      radial-gradient(circle at 50% 42%, rgba(122,31,53,0.55), transparent 60%),
+      linear-gradient(180deg, var(--wine-950), var(--wine-900));
+    transition:opacity 1.1s var(--ease), visibility 1.1s var(--ease), filter 1.1s var(--ease);
+  }
+  #intro.hidden{
+    opacity:0;
+    visibility:hidden;
+    filter:blur(6px);
+    pointer-events:none;
+  }
+  .intro-glow{
+    position:absolute;
+    width:min(70vw,520px); height:min(70vw,520px);
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(201,161,92,0.22), transparent 70%);
+    filter:blur(10px);
+    animation:pulseGlow 5s ease-in-out infinite;
+  }
+  @keyframes pulseGlow{
+    0%,100%{ transform:scale(1); opacity:.7; }
+    50%{ transform:scale(1.15); opacity:1; }
+  }
+  .intro-heart{
+    font-size:2rem;
+    color:var(--gold);
+    margin-bottom:1.4rem;
+    animation:heartbeat 2.4s ease-in-out infinite;
+    text-shadow:0 0 22px rgba(201,161,92,0.6);
+  }
+  @keyframes heartbeat{
+    0%,100%{ transform:scale(1); }
+    15%{ transform:scale(1.18); }
+    30%{ transform:scale(1); }
+    45%{ transform:scale(1.12); }
+  }
+  #intro h1{
+    font-size:clamp(1.6rem, 5vw, 2.7rem);
+    font-style:italic;
+    font-weight:500;
+    color:var(--cream);
+    max-width:16ch;
+    line-height:1.3;
+    text-shadow:0 2px 24px rgba(0,0,0,0.4);
+    position:relative;
+  }
+  #intro .sub{
+    margin-top:1rem;
+    color:var(--cream-dim);
+    font-size:.95rem;
+    letter-spacing:.04em;
+  }
+  .btn-open{
+    position:relative;
+    margin-top:2.8rem;
+    padding:.95rem 2.6rem;
+    border-radius:999px;
+    border:1px solid var(--glass-border);
+    background:var(--glass);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    color:var(--gold-light);
+    font-family:var(--sans);
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    font-size:.78rem;
+    cursor:pointer;
+    transition:all .5s var(--ease);
+    box-shadow:0 6px 30px rgba(0,0,0,.35);
+  }
+  .btn-open:hover{
+    background:rgba(201,161,92,0.14);
+    border-color:var(--gold);
+    box-shadow:0 8px 34px rgba(201,161,92,.25);
+    transform:translateY(-2px);
+  }
+  .btn-open:active{ transform:translateY(0) scale(.98); }
+
+  /* ===================== LAYOUT / SECTIONS ===================== */
+  main{ position:relative; z-index:5; }
+  section{
+    position:relative;
+    padding:7.5rem 1.5rem;
+    max-width:920px;
+    margin:0 auto;
+  }
+  .section-head{
+    text-align:center;
+    margin-bottom:3.2rem;
+  }
+  .section-head h2{
+    font-size:clamp(2rem, 5vw, 3rem);
+    margin-top:.6rem;
+    color:var(--cream);
+  }
+  .divider{
+    width:1px; height:52px;
+    background:linear-gradient(var(--gold), transparent);
+    margin:0 auto 1.2rem;
+    opacity:.6;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(34px);
+    transition:opacity 1s var(--ease), transform 1s var(--ease);
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0); }
+
+  /* ---------- HERO STRIP (after intro) ---------- */
+  #hero-strip{
+    text-align:center;
+    padding:5.5rem 1.5rem 2rem;
+  }
+  #hero-strip .heart-mini{
+    font-size:1.6rem;
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(201,161,92,.5);
+  }
+  #hero-strip h1{
+    font-size:clamp(2.3rem, 7vw, 4.2rem);
+    font-style:italic;
+    margin-top:.8rem;
+    color:var(--cream);
+  }
+  #hero-strip p{
+    margin-top:1rem;
+    color:var(--cream-dim);
+    font-size:1rem;
+  }
+
+  /* ---------- NOTRE HISTOIRE ---------- */
+  .counter-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1rem;
+    max-width:640px;
+    margin:0 auto;
+  }
+  .counter-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:18px;
+    padding:1.4rem .6rem;
+    text-align:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04);
+  }
+  .counter-card .num{
+    font-family:var(--serif);
+    font-size:clamp(1.8rem, 5vw, 2.6rem);
+    color:var(--gold-light);
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 0 20px rgba(201,161,92,.25);
+  }
+  .counter-card .lbl{
+    margin-top:.35rem;
+    font-size:.62rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+  }
+  .since{
+    text-align:center;
+    margin-top:1rem;
+    font-size:.82rem;
+    letter-spacing:.06em;
+    color:var(--cream-dim);
+  }
+  .romantic-line{
+    text-align:center;
+    margin-top:2.4rem;
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(1.15rem,3vw,1.5rem);
+    color:var(--gold-light);
+  }
+
+  /* ---------- POURQUOI JE T'AIME ---------- */
+  .cards-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:1.1rem;
+  }
+  .why-card{
+    grid-column:span 1;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-radius:20px;
+    padding:1.7rem 1.5rem;
+    cursor:pointer;
+    transition:transform .55s var(--ease), box-shadow .55s var(--ease), border-color .55s var(--ease), background .55s var(--ease);
+    box-shadow:0 10px 30px rgba(0,0,0,.22);
+    position:relative;
+    overflow:hidden;
+  }
+  .why-card:nth-child(5){ grid-column:span 2; }
+  .why-card:nth-child(6){ grid-column:span 2; text-align:center; }
+  .why-card .mark{
+    font-family:var(--serif);
+    font-size:1.5rem;
+    color:var(--gold);
+    display:block;
+    margin-bottom:.6rem;
+  }
+  .why-card p{
+    font-size:.93rem;
+    line-height:1.65;
+    color:var(--cream-soft);
+  }
+  .why-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--gold);
+    background:rgba(201,161,92,0.08);
+    box-shadow:0 16px 40px rgba(0,0,0,.32), 0 0 26px rgba(201,161,92,.12);
+  }
+  .why-card.pulsed{ animation:cardPulse .7s var(--ease); }
+  @keyframes cardPulse{
+    0%{ box-shadow:0 10px 30px rgba(0,0,0,.22); }
+    40%{ box-shadow:0 10px 30px rgba(0,0,0,.22), 0 0 0 6px rgba(201,161,92,.14); }
+    100%{ box-shadow:0 10px 30px rgba(0,0,0,.22); }
+  }
+  .mini-heart-burst{
+    position:absolute;
+    pointer-events:none;
+    font-size:1rem;
+    color:var(--gold-light);
+    animation:burstUp .9s ease-out forwards;
+  }
+  @keyframes burstUp{
+    0%{ transform:translateY(0) scale(.6); opacity:1; }
+    100%{ transform:translateY(-46px) scale(1.15); opacity:0; }
+  }
+
+  /* ---------- LA LETTRE ---------- */
+  .letter-wrap{ display:flex; justify-content:center; }
+  .letter{
+    max-width:620px;
+    width:100%;
+    background:linear-gradient(180deg, rgba(243,231,212,0.07), rgba(243,231,212,0.04));
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    border-radius:6px;
+    padding:3rem 2.4rem;
+    box-shadow:0 24px 60px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.05);
+    position:relative;
+    transform:rotate(-.4deg);
+  }
+  .letter::before{
+    content:'';
+    position:absolute; inset:14px;
+    border:1px solid rgba(201,161,92,0.22);
+    border-radius:3px;
+    pointer-events:none;
+  }
+  .letter .seal{
+    width:46px; height:46px;
+    border-radius:50%;
+    margin:0 auto 1.6rem;
+    background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-deep) 75%);
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.15rem;
+    color:var(--wine-950);
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+  }
+  .letter p{
+    font-family:var(--serif);
+    font-size:clamp(1.05rem, 2.6vw, 1.25rem);
+    line-height:1.85;
+    color:var(--cream);
+    margin-bottom:1.1rem;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity 1s var(--ease), transform 1s var(--ease);
+  }
+  .letter.in-view p{ opacity:1; transform:translateY(0); }
+  .letter p:nth-child(2){ transition-delay:.15s; }
+  .letter p:nth-child(3){ transition-delay:.35s; }
+  .letter p:nth-child(4){ transition-delay:.55s; }
+  .letter p:nth-child(5){ transition-delay:.75s; }
+  .letter p:nth-child(6){ transition-delay:.95s; }
+  .letter .signature{
+    text-align:right;
+    font-style:italic;
+    color:var(--gold-light);
+    margin-top:1.6rem;
+  }
+
+  /* ---------- MESSAGE FINAL ---------- */
+  #final{
+    text-align:center;
+    padding-bottom:9rem;
+  }
+  #final .final-heart{
+    font-size:2.2rem;
+    color:var(--gold);
+    text-shadow:0 0 30px rgba(201,161,92,.55);
+  }
+  #final p{
+    font-family:var(--serif);
+    font-style:italic;
+    font-size:clamp(1.3rem, 4vw, 1.9rem);
+    line-height:1.6;
+    color:var(--cream);
+    max-width:15ch;
+    margin:1.6rem auto 0;
+  }
+  #final .small{
+    margin-top:2.2rem;
+    font-family:var(--sans);
+    font-style:normal;
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--cream-dim);
+    max-width:none;
+  }
+
+  /* ---------- MUSIC TOGGLE ---------- */
+  #music-toggle{
+    position:fixed;
+    bottom:1.4rem; right:1.4rem;
+    z-index:60;
+    width:52px; height:52px;
+    border-radius:50%;
+    background:var(--glass-strong);
+    border:1px solid var(--glass-border);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);
+    transition:transform .4s var(--ease), border-color .4s var(--ease);
+  }
+  #music-toggle:hover{ transform:scale(1.06); border-color:var(--gold); }
+  #music-toggle svg{ width:18px; height:18px; fill:var(--gold-light); }
+  #music-toggle .bars{ display:flex; gap:2px; align-items:flex-end; height:16px; }
+  #music-toggle .bars span{
+    width:3px; background:var(--gold-light); border-radius:2px;
+    animation:eq 1s ease-in-out infinite;
+  }
+  #music-toggle.playing .bars span:nth-child(1){ height:6px; animation-delay:0s; }
+  #music-toggle.playing .bars span:nth-child(2){ height:14px; animation-delay:.15s; }
+  #music-toggle.playing .bars span:nth-child(3){ height:9px; animation-delay:.3s; }
+  #music-toggle:not(.playing) .bars span{ height:5px; animation:none; }
+  @keyframes eq{
+    0%,100%{ transform:scaleY(.5); }
+    50%{ transform:scaleY(1.4); }
+  }
+
+  footer{
+    position:relative; z-index:5;
+    text-align:center;
+    padding:2.5rem 1.5rem 3.5rem;
+    color:var(--cream-dim);
+    font-size:.72rem;
+    letter-spacing:.1em;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:640px){
+    section{ padding:5.5rem 1.2rem; }
+    .counter-grid{ gap:.6rem; }
+    .counter-card{ padding:1rem .3rem; border-radius:14px; }
+    .cards-grid{ grid-template-columns:1fr; }
+    .why-card:nth-child(5), .why-card:nth-child(6){ grid-column:span 1; text-align:left; }
+    .letter{ padding:2.2rem 1.4rem; transform:rotate(0); }
+    #hero-strip{ padding-top:4rem; }
+  }
+
+  button:focus-visible, .btn-open:focus-visible{
+    outline:2px solid var(--gold-light);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<div id="hearts-layer"></div>
+
+<!-- INTRO OVERLAY -->
+<div id="intro">
+  <div class="intro-glow"></div>
+  <div class="intro-heart">❤</div>
+  <h1>J'ai quelque chose à te montrer habibi&nbsp;… ❤️</h1>
+ 
+  <button class="btn-open" id="openBtn">Ouvre-moi</button>
+</div>
+
+<main>
+
+  <section id="hero-strip">
+    <div class="heart-mini reveal">❤</div>
+    <h1 class="reveal">Pour toi, Habibi</h1>
+    
+  </section>
+
+  <!-- NOTRE HISTOIRE -->
+  <section id="histoire">
+    <div class="section-head reveal">
+      <span class="eyebrow">Depuis le 7 février 2023</span>
+      <h2>Notre histoire</h2>
+    </div>
+    <div class="counter-grid reveal">
+      <div class="counter-card">
+        <div class="num" id="days">0</div>
+        <div class="lbl">Jours</div>
+      </div>
+      <div class="counter-card">
+        <div class="num" id="hours">0</div>
+        <div class="lbl">Heures</div>
+      </div>
+      <div class="counter-card">
+        <div class="num" id="minutes">0</div>
+        <div class="lbl">Minutes</div>
+      </div>
+      <div class="counter-card">
+        <div class="num" id="seconds">0</div>
+        <div class="lbl">Secondes</div>
+      </div>
+    </div>
+    <p class="romantic-line reveal">Et jusqu'à l'infini, inchallah… ❤️</p>
+  </section>
+
+  <!-- POURQUOI JE T'AIME -->
+  <section id="raisons">
+    <div class="section-head reveal">
+      <span class="eyebrow">Quelques vérités</span>
+      <h2>Pourquoi je t'aime ❤️</h2>
+    </div>
+    <div class="cards-grid">
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>J'aime ta présence, ton sourire, ton ambition, ta façon de me rassurer et surtout cette façon que tu as de me faire rire.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>J'aime tous nos petits souvenirs, même les plus simples.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>Avec toi, je peux complètement être moi-même.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>Tu es la première personne à laquelle je pense le matin, et la dernière à laquelle je pense le soir.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>Et je ne t'aime pas seulement pour tous les beaux moments qu'on a vécus. Je t'aime aussi pour tout ce qu'on a traversé ensemble, pour les moments difficiles qui ont fait partie de notre histoire et qui nous ont appris des choses.</p>
+      </div>
+      <div class="why-card reveal">
+        <span class="mark">❤</span>
+        <p>Je t'aime tout simplement parce que c'est toi. ❤️</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LA LETTRE -->
+  <section id="lettre">
+    <div class="section-head reveal">
+      <span class="eyebrow">Écrite pour toi</span>
+      <h2>Une lettre pour toi 💌</h2>
+    </div>
+    <div class="letter-wrap">
+      <div class="letter reveal">
+        <div class="seal">❤</div>
+        <p>Habibi, mon amour, l'homme de ma vie,</p>
+        <p>Je voulais juste te dire à quel point je suis fière de toi et de tout ce que tu fais pour construire ton avenir, et le nôtre.</p>
+        <p>Je vois tous les efforts que tu fais, même ceux dont tu ne parles pas, et je suis vraiment fière de l'homme que tu deviens.</p>
+        <p>Je suis sûre qu'avec ta détermination, tu vas réussir à réaliser tous tes rêves (ana menhom heheheee) inchallah ❤️</p>
+        <p>Sache que je serai toujours à tes côtés, dans les bons comme dans les mauvais moments, pour t'encourager, te soutenir et avancer avec toi, étape par étape.</p>
+        <p class="signature">— Souhila 🤍</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MESSAGE FINAL -->
+  <section id="final">
+    <div class="final-heart reveal">❤</div>
+    <p class="reveal">Toi et moi, pour toujours et à jamais, inchallah.</p>
+    <p class="small reveal">Fait avec tout mon cœur, pour toi habibi</p>
+  </section>
+
+</main>
+
+
+
+<button id="music-toggle" aria-label="Jouer / mettre en pause la musique">
+  <div class="bars"><span></span><span></span><span></span></div>
+</button>
+<audio id="bg-music" loop preload="none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- INTRO OPEN ---------- */
+  var intro = document.getElementById('intro');
+  var openBtn = document.getElementById('openBtn');
+  var opened = false;
+
+  function openSite(){
+    if(opened) return;
+    opened = true;
+    intro.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    setTimeout(function(){
+      document.querySelectorAll('#hero-strip .reveal').forEach(function(el, i){
+        setTimeout(function(){ el.classList.add('in-view'); }, i * 180);
+      });
+    }, 300);
+  }
+  openBtn.addEventListener('click', openSite);
+  document.body.style.overflow = 'hidden';
+
+  /* ---------- SCROLL REVEAL ---------- */
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+      }
+    });
+  }, { threshold: 0.18 });
+
+  document.querySelectorAll('.reveal, .letter').forEach(function(el){
+    observer.observe(el);
+  });
+
+  /* ---------- LIVE COUNTER ---------- */
+  var startDate = new Date('2023-02-07T00:00:00');
+  var elDays = document.getElementById('days');
+  var elHours = document.getElementById('hours');
+  var elMinutes = document.getElementById('minutes');
+  var elSeconds = document.getElementById('seconds');
+
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+  function tick(){
+    var now = new Date();
+    var diff = Math.max(0, now - startDate);
+    var totalSeconds = Math.floor(diff / 1000);
+    var days = Math.floor(totalSeconds / 86400);
+    var hours = Math.floor((totalSeconds % 86400) / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+    elDays.textContent = days;
+    elHours.textContent = pad(hours);
+    elMinutes.textContent = pad(minutes);
+    elSeconds.textContent = pad(seconds);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---------- WHY-CARDS CLICK INTERACTION ---------- */
+  document.querySelectorAll('.why-card').forEach(function(card){
+    card.addEventListener('click', function(e){
+      card.classList.remove('pulsed');
+      void card.offsetWidth;
+      card.classList.add('pulsed');
+
+      var burst = document.createElement('span');
+      burst.className = 'mini-heart-burst';
+      burst.textContent = '❤';
+      var rect = card.getBoundingClientRect();
+      burst.style.left = (e.clientX - rect.left) + 'px';
+      burst.style.top = (e.clientY - rect.top) + 'px';
+      card.appendChild(burst);
+      setTimeout(function(){ burst.remove(); }, 900);
+    });
+  });
+
+  /* ---------- AMBIENT FLOATING HEARTS ---------- */
+  var layer = document.getElementById('hearts-layer');
+  var symbols = ['❤','❥','♡'];
+  var maxHearts = window.innerWidth < 640 ? 10 : 16;
+
+  function spawnHeart(){
+    var h = document.createElement('span');
+    h.className = 'heart-particle';
+    h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    var size = 10 + Math.random() * 16;
+    var duration = 12 + Math.random() * 10;
+    var left = Math.random() * 100;
+    var dx = (Math.random() * 80 - 40) + 'px';
+    var rot = (Math.random() * 40 - 20) + 'deg';
+    var opacity = 0.15 + Math.random() * 0.35;
+
+    h.style.left = left + 'vw';
+    h.style.fontSize = size + 'px';
+    h.style.animationDuration = duration + 's';
+    h.style.setProperty('--dx', dx);
+    h.style.setProperty('--r', rot);
+    h.style.setProperty('--o', opacity);
+    h.style.setProperty('--s', (0.8 + Math.random() * 0.6));
+
+    layer.appendChild(h);
+    setTimeout(function(){ h.remove(); }, duration * 1000 + 500);
+  }
+
+  for(var i = 0; i < maxHearts; i++){
+    setTimeout(spawnHeart, i * 900);
+  }
+  setInterval(function(){
+    if(layer.childElementCount < maxHearts) spawnHeart();
+  }, 1400);
+
+  /* ---------- MUSIC TOGGLE ---------- */
+  var musicBtn = document.getElementById('music-toggle');
+  var audio = document.getElementById('bg-music');
+  var isPlaying = false;
+
+  musicBtn.addEventListener('click', function(){
+    if(!isPlaying){
+      audio.play().then(function(){
+        isPlaying = true;
+        musicBtn.classList.add('playing');
+      }).catch(function(){
+        musicBtn.classList.remove('playing');
+      });
+    } else {
+      audio.pause();
+      isPlaying = false;
+      musicBtn.classList.remove('playing');
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
